@@ -58,9 +58,10 @@ validSet = validSet.reset_index(drop=True)
 
 #--Img Processing--#
 
-#get number of rows in dataframes
-trainRows = trainSet.shape[0]
-validRows = validSet.shape[0]
+#trainRows = trainSet.shape[0]
+#validRows = validSet.shape[0]
+##loading 330k images into memory is not gunna work. Potentially need to do multiple iterations of multiple batches?
+##maybe a subset of images? randomly generated indexes? 
 
 #now we need to loop through the CSV's to get the images and store in a list
 #during this, we need to read in the image at the dataframe filename,
