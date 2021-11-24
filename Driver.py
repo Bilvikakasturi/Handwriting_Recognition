@@ -58,6 +58,23 @@ validSet = validSet.reset_index(drop=True)
 
 #--Img Processing--#
 
-#make all same size
+#get number of rows in dataframes
+trainRows = trainSet.shape[0]
+validRows = validSet.shape[0]
 
+#now we need to loop through the CSV's to get the images and store in a list
+#during this, we need to read in the image at the dataframe filename,
+#shape into a 64 * 256 image, either paring down or padding
+#then from what I've read, the image needs to be rotated, and pixel intensity set to [0, 1] rather than [0,255]
+
+
+#--CTC Loss--#
+
+#--Model--#
+
+#--Training--#
+
+#--Validation--#
+
+#--Test--#
 
