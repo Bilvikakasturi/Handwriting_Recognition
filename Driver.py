@@ -77,8 +77,10 @@ def main():
 
     trainImgLst = []
     trainLblLst = []
+    trainLblLen = []
     validImgLst = []
     validLblLst = []
+    validLblLen = []
     ##this will take first trainRange images. If we want to do random, we need to alter a bit
     ##One post I read talked about 'blurring' the image to reduce noise... but I'm not sure
     ##the code would look like: finalImg = cv2GaussianBlur(greyImg, (5, 5),0)
@@ -94,8 +96,14 @@ def main():
         img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
         img = img/255    
         trainImgLst.append(img)
+        ##get image lbl and length
         label = str(trainSet.loc[x, 'IDENTITY'])
+        lblLen = len(label)
+        trainLblLen.append(lblLen)
+        ##enumerate label
         enumLbl = txt2num(enumAlpha, label)
+        ##extend enum list for loss
+        enumLbl.extend([-1]*(24 - lblLen))
         trainLblLst.append(enumLbl)
 
     for y in range(validRange):
@@ -107,11 +115,33 @@ def main():
         img = img/255
         validImgLst.append(img)
         label = str(trainSet.loc[x, 'IDENTITY'])
+        lblLen = len(label)
+        validLblLen.append(lblLen)
         enumLbl = txt2num(enumAlpha, label)
+        enumLbl.extend([-1]*(24 - lblLen))
         validLblLst.append(enumLbl)
 
+    ##conversion to numpy arrays
     trainImgLst = np.array(trainImgLst).reshape(-1, 256, 64, 1)
-    validImgLst = np.array(validImgLst).reshape(-1, 256, 64, 1)    
+    validImgLst = np.array(validImgLst).reshape(-1, 256, 64, 1)
+
+    trainLblLst = np.array(trainLblLst)
+    validLblLst = np.array(validLblLst)
+
+    trainLblLen = np.array(trainLblLen)
+    validLblLen = np.array(validLblLen)
+
+    ##input length is width - 2, fill array with value--used in model
+    trInputLen = np.ones([trainRange, 1]) * 62
+    vldInputLen = np.ones([validRange, 1]) * 62
+#--Model--#
+
+#--Training--#
+
+#--Validation--#
+
+#--Test--#
+    
 
 ##generic python enumeration functions for labels; easier than dealing with ord or anything
 def txt2num(alphaStr, lblStr):
@@ -133,15 +163,12 @@ def num2txt(alphaStr, numLst):
             txt = txt + alphaStr[num]
     return txt
 
+#---CTC Loss Function---#
+##probably doesn't need sep function but oh well
+def ctcLoss(trueLbl, yPred, inpLen, lblLen):
 
-enumLabel=[]
-#--CTC Loss--#
-
-#--Model--#
-
-#--Training--#
-
-#--Validation--#
-
-#--Test--#
+    #according to notebook, want to filter out first couple RNN outputs
+    yPred = yPred[:, 2:, :]
+    ##return keras batch cost function
+    return keras.backend.ctc_batch_cost(trueLbl, yPred, inpLen, lblLen)
 
