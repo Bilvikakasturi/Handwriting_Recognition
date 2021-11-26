@@ -134,8 +134,60 @@ def main():
     ##input length is width - 2, fill array with value--used in model
     trInputLen = np.ones([trainRange, 1]) * 62
     vldInputLen = np.ones([validRange, 1]) * 62
-#--Model--#
 
+        
+    #---------------Model---------------#
+    #maybe make this into function with arguments passed in
+
+
+    ##///CNN///##
+    inputData = lyr.Input(shape=(256, 64, 1), name='input')
+
+    ##build convolution layers:
+    ##padding same to preserve spatial dimensions
+    ##initilizers are for distribution type. Everywhere I've looked seems to use "he_normal"
+    y = lyr.Conv2D(32, (3, 3), activation='relu', padding='same', kernel_initializer='he_normal')(inputData)
+    ##visit this site to learn about pooling: https://www.machinecurve.com/index.php/2020/01/30/what-are-max-pooling-average-pooling-global-max-pooling-and-global-average-pooling/
+    y = lyr.MaxPooling2D(pool_size=(2, 2))(y)
+
+    #next layer - double filters
+    y = lyr.Conv2D(64, (3, 3), activation='relu', padding='same', kernel_initializer='he_normal')(inputData)
+    y = lyr.MaxPooling2D(pool_size=(2, 2))(y)
+    #droupout to reduce noise - change raise or lower if needed; it is percentage
+    y = lyr.Dropout(.2)(y)
+
+    #next layer - double filters again (we can also add a 16 filter layer, but most people have used only 2 or 3
+    y = lyr.Conv2D(128, (3, 3), activation='relu', padding='same', kernel_initializer='he_normal')(inputData)
+    y = lyr.MaxPooling2D(pool_size=(2, 2))(y)
+    y = lyr.Dropout(.2)(y)
+
+
+    ##///CNN to RNN///##
+    #reshape for regular nn --MAY NOT BE RIGHT...I did 3 layers, so downsample SHOULD be 8x but maybe I need to div by 4
+    new_shape = ((256//8), (64//8) * 128)
+    y = lyr.Reshape(target_shape=new_shape))(y)
+    ##Rnn layer similar to CNN's Conv2D
+    ##NOT SURE if 64 is correct, as that is output size
+    y = lyr.Dense(64, activation='relu', kernel_initializer='he_normal')(y)
+
+    ##Numbers after LSTM may be wrong... might need to be 256, 128. Need to confirm these
+    y = lyr.Bidirectional(L.LSTM(256, return_sequences=True, dropout=.25))(y)
+    y = lyr.Bidirectional(L.LSTM(128, return_sequences=True, dropout=.25))(y)
+
+    #dense num of char+1: 26 alpha 3 special
+    y = lyr.Dense(30, activation='softmax', kernel_initializer='he_normal', name='denseOut')(y)
+
+    model = mdl.Model(inputs = inputData, outputs = y)
+
+    #model.summary()
+
+    ##maybe need Optimizers, especially if using sep function
+
+    #optim = keras.optimizers.Adam()
+    #model.compile(optimizer=opt)
+    #return model
+    
+                          
 #--Training--#
 
 #--Validation--#
