@@ -1,10 +1,10 @@
 #imports
-import numpy as nmPy                #data manipulation
-import tensorflow as tenFlw         #Neural Network
-import pandas as panda              #csv stuff
-import matplotlib.pyplot as plt     #backend to write results to file
+import numpy as np                  #data manipulation
+import tensorflow as tf             #Neural Network
+import pandas as pd                 #csv stuff
+import matplotlib.pyplot as plt     #backend to write results to file and plotting
 import cv2                          #openCV for images
-import os
+import os                           #might not be needed
 import keras
 import keras.models as mdl
 import keras.layers as lyr
