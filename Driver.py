@@ -26,7 +26,7 @@ def main():
     if (trainSet['IDENTITY'].isnull().sum() > 0):
         #drop rows with missing values
         trainSet = trainSet.dropna(axis=0)
-    if (validSet['IDENTITY'0.isnull().sum() > 0):
+    if (validSet['IDENTITY'].isnull().sum() > 0):
         validSet = validSet.dropna(axis=0)
 
 
