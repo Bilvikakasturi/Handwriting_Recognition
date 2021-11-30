@@ -14,8 +14,8 @@ def main():
     #--LOAD DATA--#
 
     #import the csvs to a panda dataframe
-    trainSet = pd.read_csv('\\written_name_train_v2.csv')
-    validSet = pd.read_csv('\\written_name_validation_v2.csv')
+    trainSet = pd.read_csv('written_name_train_v2.csv')
+    validSet = pd.read_csv('written_name_validation_v2.csv')
     #note: back slashes are Windows paths, if using linux or mac, will need to use forward slash
 
 
@@ -87,7 +87,7 @@ def main():
     enumAlpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ-' "
         
     for x in range(trainRange):
-        imgPath = '\\train\train\\' + trainSet.loc[x, 'FILENAME']
+        imgPath = '\\train\\train\\' + trainSet.loc[x, 'FILENAME']
         img = cv2.imread(imgPath)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         ##resizes img to 256 w 64 h; there was one notebook that cropped or padded with white space. might be better?
@@ -107,7 +107,7 @@ def main():
         trainLblLst.append(enumLbl)
 
     for y in range(validRange):
-        imgPath = '\\train\train\\' + validSet.loc[x, 'FILENAME']
+        imgPath = '\\train\\train\\' + validSet.loc[x, 'FILENAME']
         img = cv2.imread(imgPath)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img = cv2.resize(img, (256, 64))
